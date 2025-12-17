@@ -17,13 +17,13 @@
             background-color: white;
             border-radius: 12px;
             border: 1px solid #e1e1e1;
-            overflow: hidden;
+            overflow: hidden; 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
         }
 
         .product-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px); 
         }
 
         .product-image {
@@ -40,7 +40,7 @@
 
         .product-title {
             font-size: 1.5rem;
-            margin-bottom: 10px;
+            margin: 0 0 10px 0;
             color: #333;
         }
 
@@ -59,6 +59,7 @@
             display: block;
         }
 
+        /* Buy Now Button */
         .buy-btn {
             background-color: #ff4757;
             color: white;
@@ -67,24 +68,22 @@
             border-radius: 25px;
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .buy-btn:hover {
             background-color: #ff6b81;
+            box-shadow: 0 4px 10px rgba(255, 71, 87, 0.4);
         }
     </style>
 </head>
 <body>
 
     <div class="product-card">
-        <img src="headphones.jpg" alt="Wireless Headphones" class="product-image">
-
+        <img src="wireless headphones.png" alt="Product Image" class="product-image">
         <div class="product-info">
             <h3 class="product-title">Wireless Headphones</h3>
-            <p class="product-desc">
-                Experience high-quality sound with noise-canceling technology
-                and 40-hour battery life.
-            </p>
+            <p class="product-desc">Experience high-quality sound with noise-canceling technology and 40-hour battery life.</p>
             <span class="product-price">$129.99</span>
             <button class="buy-btn">Buy Now</button>
         </div>
