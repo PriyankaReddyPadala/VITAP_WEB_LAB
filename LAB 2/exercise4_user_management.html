@@ -2,93 +2,199 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User Management</title>
+    <title>Advanced LocalStorage User Management</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            background: #ffffff;
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        button {
+            padding: 8px 12px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background: #e0e0e0;
+        }
+
+        .delete-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            cursor: pointer;
+        }
+
+        .clear-btn {
+            background: black;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin-top: 15px;
+        }
+
+        .message {
+            text-align: center;
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
 </head>
+
 <body>
-<h2>User Registration</h2>
+
+<h1>User Registration & Management</h1>
 
 <form onsubmit="registerUser(event)">
-    Name: <input type="text" id="name"><br><br>
-    Email: <input type="email" id="email"><br><br>
-    Mobile: <input type="text" id="mobile"><br><br>
-    Password: <input type="password" id="password"><br><br>
+    <input type="text" id="name" placeholder="Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="text" id="mobile" placeholder="Mobile Number">
+    <input type="password" id="password" placeholder="Password">
     <button type="submit">Register</button>
 </form>
 
-<h2>Registered Users</h2>
-<table border="1">
+<div class="message" id="msg"></div>
+
+<table>
     <thead>
         <tr>
-            <th>Name</th><th>Email</th><th>Mobile</th><th>Action</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody id="userTable"></tbody>
 </table>
 
-<br>
-<button onclick="clearAll()">Clear All Users</button>
+<center>
+    <button class="clear-btn" onclick="clearAllUsers()">Clear All Users</button>
+</center>
 
 <script>
-    function registerUser(e) {
-        e.preventDefault();
+    function getUsers() {
+        return JSON.parse(localStorage.getItem("users")) || [];
+    }
 
-        const name = nameInput.value;
-        const email = emailInput.value;
-        const mobile = mobileInput.value;
-        const password = passwordInput.value;
+    function saveUsers(users) {
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function registerUser(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const mobile = document.getElementById("mobile").value.trim();
+        const password = document.getElementById("password").value.trim();
 
         if (!name || !email || !mobile || !password) {
             alert("All fields are mandatory");
             return;
         }
-        if (mobile.length !== 10) {
-            alert("Mobile must be 10 digits");
-            return;
-        }
-        if (password.length < 6) {
-            alert("Password must be minimum 6 characters");
+
+        if (!/^\d{10}$/.test(mobile)) {
+            alert("Mobile number must be 10 digits");
             return;
         }
 
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        if (users.some(u => u.email === email)) {
+        if (password.length < 6) {
+            alert("Password must be at least 6 characters");
+            return;
+        }
+
+        let users = getUsers();
+
+        if (users.some(user => user.email === email)) {
             alert("Email already registered");
             return;
         }
 
         users.push({ name, email, mobile });
-        localStorage.setItem("users", JSON.stringify(users));
-        loadUsers();
-        e.target.reset();
+        saveUsers(users);
+
+        document.getElementById("msg").innerText = "User Registered Successfully";
+
+        event.target.reset();
+        displayUsers();
     }
 
-    function loadUsers() {
-        const users = JSON.parse(localStorage.getItem("users")) || [];
-        userTable.innerHTML = "";
-        users.forEach((u, i) => {
-            userTable.innerHTML += `
-                <tr>
-                    <td>${u.name}</td>
-                    <td>${u.email}</td>
-                    <td>${u.mobile}</td>
-                    <td><button onclick="deleteUser(${i})">Delete</button></td>
-                </tr>`;
+    function displayUsers() {
+        const users = getUsers();
+        const table = document.getElementById("userTable");
+        table.innerHTML = "";
+
+        users.forEach((user, index) => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.mobile}</td>
+                <td>
+                    <button class="delete-btn" onclick="deleteUser(${index})">
+                        Delete
+                    </button>
+                </td>
+            `;
+
+            table.appendChild(row);
         });
     }
 
     function deleteUser(index) {
-        let users = JSON.parse(localStorage.getItem("users"));
+        let users = getUsers();
         users.splice(index, 1);
-        localStorage.setItem("users", JSON.stringify(users));
-        loadUsers();
+        saveUsers(users);
+        displayUsers();
     }
 
-    function clearAll() {
-        localStorage.clear();
-        loadUsers();
+    function clearAllUsers() {
+        if (confirm("Are you sure you want to delete all users?")) {
+            localStorage.removeItem("users");
+            displayUsers();
+        }
     }
 
-    loadUsers();
+    displayUsers();
 </script>
+
 </body>
 </html>
