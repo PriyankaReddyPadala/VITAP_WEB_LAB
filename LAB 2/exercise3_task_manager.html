@@ -2,82 +2,150 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Task Manager</title>
+    <title>Advanced Drag and Drop Task Manager</title>
+
     <style>
-        body { font-family: Arial; }
-        .board { display: flex; gap: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .task-input {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 250px;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .board {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
         .column {
             width: 30%;
+            background: #ffffff;
             padding: 10px;
-            border: 2px solid #000;
-            min-height: 200px;
+            border-radius: 6px;
+            min-height: 300px;
+            border: 2px dashed #ccc;
         }
+
+        .column h3 {
+            text-align: center;
+        }
+
         .task {
-            background: lightgray;
-            padding: 8px;
-            margin: 5px 0;
+            background: #e3f2fd;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
             cursor: grab;
         }
+
         .completed {
-            background: lightgreen;
+            background: #c8e6c9;
+        }
+
+        .message {
+            text-align: center;
+            color: green;
+            font-weight: bold;
+            margin-top: 15px;
         }
     </style>
 </head>
+
 <body>
 
-<h2>Task Manager</h2>
-<input type="text" id="taskInput" placeholder="Enter task">
-<button onclick="addTask()">Add Task</button>
+<h1>Advanced Drag & Drop Task Manager</h1>
+
+<div class="task-input">
+    <input type="text" id="taskName" placeholder="Enter task name">
+    <button onclick="addTask()">Add Task</button>
+</div>
 
 <div class="board">
-    <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <div class="column" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h3>To Do</h3>
     </div>
 
-    <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <div class="column" id="inprogress" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h3>In Progress</h3>
     </div>
 
-    <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <div class="column" id="completed" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h3>Completed</h3>
     </div>
 </div>
 
+<div class="message" id="message"></div>
+
 <script>
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
+    let taskId = 0;
 
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-    }
-
-    function drop(ev) {
-        ev.preventDefault();
-        const data = ev.dataTransfer.getData("text");
-        const task = document.getElementById(data);
-        ev.target.appendChild(task);
-
-        if (ev.target.querySelector("h3").innerText === "Completed") {
-            task.classList.add("completed");
-            alert("Task Completed Successfully");
-        }
-    }
-
-    let count = 0;
     function addTask() {
-        const input = document.getElementById("taskInput").value;
-        if (input === "") return;
+        const taskInput = document.getElementById("taskName");
+        const taskName = taskInput.value.trim();
+
+        if (taskName === "") {
+            alert("Please enter a task name");
+            return;
+        }
 
         const task = document.createElement("div");
         task.className = "task";
-        task.id = "task" + count++;
         task.draggable = true;
-        task.ondragstart = drag;
-        task.innerText = input + " (" + new Date().toLocaleDateString() + ")";
+        task.id = "task" + taskId++;
 
-        document.querySelector(".column").appendChild(task);
-        document.getElementById("taskInput").value = "";
+        const date = new Date().toLocaleDateString();
+
+        task.innerHTML = `<strong>${taskName}</strong><br><small>${date}</small>`;
+        task.ondragstart = drag;
+
+        document.getElementById("todo").appendChild(task);
+        taskInput.value = "";
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        const data = event.dataTransfer.getData("text");
+        const task = document.getElementById(data);
+
+        if (event.target.classList.contains("column")) {
+            event.target.appendChild(task);
+
+            if (event.target.id === "completed") {
+                task.classList.add("completed");
+                document.getElementById("message").innerText =
+                    "Task Completed Successfully";
+            } else {
+                task.classList.remove("completed");
+                document.getElementById("message").innerText = "";
+            }
+        }
     }
 </script>
 
