@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management</title>
+</head>
+<body>
+
+<h2>Student Management System</h2>
+
+<form id="studentForm">
+    <input type="text" id="id" placeholder="Student ID" required>
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="text" id="dept" placeholder="Department" required>
+    <input type="number" id="marks" placeholder="Marks" required>
+    <button type="submit">Add Student</button>
+</form>
+
+<br>
+<table border="1" id="studentTable">
+    <thead>
+        <tr>
+            <th>ID</th><th>Name</th><th>Dept</th><th>Marks</th><th>Action</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<div id="message"></div>
+
+<script>
+let students = [];
+let tableBody = document.querySelector("#studentTable tbody");
+let message = document.getElementById("message");
+
+document.getElementById("studentForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    let student = {
+        id: document.getElementById("id").value,
+        name: document.getElementById("name").value,
+        dept: document.getElementById("dept").value,
+        marks: document.getElementById("marks").value
+    };
+
+    students.push(student);
+    displayStudents();
+    message.innerHTML = "Student added successfully (200)";
+    this.reset();
+});
+
+function displayStudents() {
+    tableBody.innerHTML = "";
+    students.forEach((s, index) => {
+        tableBody.innerHTML += `
+            <tr>
+                <td>${s.id}</td>
+                <td>${s.name}</td>
+                <td>${s.dept}</td>
+                <td>${s.marks}</td>
+                <td>
+                    <button onclick="deleteStudent(${index})">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function deleteStudent(index) {
+    students.splice(index, 1);
+    displayStudents();
+    message.innerHTML = "Student deleted (200)";
+}
+</script>
+
+</body>
+</html>
