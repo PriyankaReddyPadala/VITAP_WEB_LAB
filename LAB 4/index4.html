@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Dashboard</title>
+</head>
+<body>
+
+<h2>Weather Dashboard</h2>
+<input type="text" id="city" placeholder="Enter city">
+<button onclick="getWeather()">Search</button>
+
+<div id="loading" style="display:none;">Loading...</div>
+<div id="weather"></div>
+
+<script>
+let lastResult = null;
+
+function getWeather() {
+    let city = document.getElementById("city").value;
+    let apiKey = "YOUR_API_KEY"; // Replace with your API key
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    document.getElementById("loading").style.display = "block";
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("City not found (404)");
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById("loading").style.display = "none";
+
+            lastResult = data;
+
+            document.getElementById("weather").innerHTML = `
+                <p>Temperature: ${data.main.temp} °C</p>
+                <p>Humidity: ${data.main.humidity}%</p>
+                <p>Condition: ${data.weather[0].description}</p>
+            `;
+        })
+        .catch(error => {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("weather").innerHTML = error.message;
+        });
+}
+</script>
+
+</body>
+</html>
