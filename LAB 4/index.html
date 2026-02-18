@@ -1,53 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Product Search</title>
+    <title>Username Checker</title>
+    <style>
+        #message { font-weight: bold; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
 </head>
 <body>
 
-<h2>Live Product Search</h2>
-<input type="text" id="search" placeholder="Search product...">
-<div id="results"></div>
+<h2>Registration Form</h2>
+
+<form id="registerForm">
+    <input type="text" id="username" placeholder="Enter Username" required>
+    <span id="loading" style="display:none;">Checking...</span>
+    <div id="message"></div>
+    <br>
+    <button type="submit">Register</button>
+</form>
 
 <script>
-let searchInput = document.getElementById("search");
-let resultsDiv = document.getElementById("results");
-let timeout = null;
+let usernameInput = document.getElementById("username");
+let message = document.getElementById("message");
+let loading = document.getElementById("loading");
+let form = document.getElementById("registerForm");
+let isAvailable = false;
 
-searchInput.addEventListener("input", function () {
-    clearTimeout(timeout);
+usernameInput.addEventListener("input", function () {
+    let username = usernameInput.value.trim();
+    if (username.length === 0) return;
 
-    timeout = setTimeout(() => {
-        let query = searchInput.value.toLowerCase();
+    loading.style.display = "inline";
 
-        fetch("products.json")
-            .then(res => res.json())
-            .then(data => {
-                let filtered = data.products.filter(p =>
-                    p.name.toLowerCase().includes(query)
-                );
+    fetch("users.json")
+        .then(response => response.json())
+        .then(data => {
+            loading.style.display = "none";
+            if (data.users.includes(username)) {
+                message.textContent = "Username already taken";
+                message.className = "error";
+                isAvailable = false;
+            } else {
+                message.textContent = "Username available";
+                message.className = "success";
+                isAvailable = true;
+            }
+        })
+        .catch(() => {
+            loading.style.display = "none";
+            message.textContent = "Error checking username";
+            message.className = "error";
+        });
+});
 
-                resultsDiv.innerHTML = "";
-
-                if (filtered.length === 0) {
-                    resultsDiv.innerHTML = "<p>No results found</p>";
-                    return;
-                }
-
-                filtered.forEach(p => {
-                    resultsDiv.innerHTML += `
-                        <p>
-                            <strong>${p.name}</strong><br>
-                            Price: ₹${p.price}<br>
-                            Category: ${p.category}
-                        </p><hr>
-                    `;
-                });
-            })
-            .catch(() => {
-                resultsDiv.innerHTML = "<p>Error fetching data</p>";
-            });
-    }, 500); // Debounce 500ms
+form.addEventListener("submit", function (e) {
+    if (!isAvailable) {
+        e.preventDefault();
+        alert("Cannot submit. Username unavailable.");
+    }
 });
 </script>
 
