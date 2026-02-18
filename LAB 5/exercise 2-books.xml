@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<library>
+    <book>
+        <id>1</id>
+        <title>Java Programming</title>
+        <author>James Gosling</author>
+        <status>Available</status>
+    </book>
+</library>

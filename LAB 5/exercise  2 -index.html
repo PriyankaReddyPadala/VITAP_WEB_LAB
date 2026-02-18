@@ -1,0 +1,37 @@
+<script>
+let xmlData;
+
+function loadBooks() {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "books.xml", true);
+    xhr.onload = function() {
+        xmlData = xhr.responseXML;
+        displayBooks();
+    };
+    xhr.send();
+}
+
+function displayBooks() {
+    const books = xmlData.getElementsByTagName("book");
+    let output = "";
+    for (let i=0; i<books.length; i++) {
+        output += `
+        <tr>
+            <td>${books[i].getElementsByTagName("id")[0].textContent}</td>
+            <td>${books[i].getElementsByTagName("title")[0].textContent}</td>
+            <td>${books[i].getElementsByTagName("author")[0].textContent}</td>
+            <td>${books[i].getElementsByTagName("status")[0].textContent}</td>
+            <td><button onclick="deleteBook(${i})">Delete</button></td>
+        </tr>`;
+    }
+    document.getElementById("bookTable").innerHTML = output;
+}
+
+function deleteBook(index) {
+    const books = xmlData.getElementsByTagName("book");
+    xmlData.documentElement.removeChild(books[index]);
+    displayBooks();
+}
+
+window.onload = loadBooks;
+</script>
