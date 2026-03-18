@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .report-card { background: white; max-width: 350px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 5px solid #4a90e2; }
+        h1 { font-size: 1.2rem; color: #333; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px thin #eee; }
+        .label { color: #666; font-weight: 500; }
+        .value { color: #222; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="report-card">
+        <h1>Performance Report</h1>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        const studentName = "Priyanka Reddy";
+        const marks = [92, 92, 98, 90, 93];
+
+        let totalMarks = 0;
+        for (const mark of marks) {
+            totalMarks += mark;
+        }
+
+        const calculateAverage = (total, count) => total / count;
+        let averageMarks = calculateAverage(totalMarks, marks.length);
+
+        const outputDiv = document.getElementById('output');
+        outputDiv.innerHTML = `
+            <div class="row"><span class="label">Name:</span> <span class="value">${studentName}</span></div>
+            <div class="row"><span class="label">Total Marks:</span> <span class="value">${totalMarks}</span></div>
+            <div class="row"><span class="label">Average:</span> <span class="value">${averageMarks.toFixed(2)}</span></div>
+        `;
+
+        console.log(`Student Performance Report\n---------------------------\nName: ${studentName}\nTotal Marks: ${totalMarks}\nAverage Marks: ${averageMarks.toFixed(2)}`);
+    </script>
+</body>
+</html>
