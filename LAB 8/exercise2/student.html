@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Report Card</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 320px; }
+        h2 { margin-top: 0; color: #1a73e8; border-bottom: 2px solid #e8eaed; padding-bottom: 10px; }
+        .info { margin: 15px 0; font-size: 1.1rem; }
+        .status { margin-top: 20px; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; }
+        .fail { background-color: #fdeaea; color: #d93025; }
+        .pass { background-color: #e6f4ea; color: #1e8e3e; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Student Report</h2>
+    <div id="display"></div>
+</div>
+
+<script>
+    const student = {
+        id: 8519,
+        name: "Priyanka Reddy",
+        department: "CSE",
+        marks: 92
+    };
+
+    const { id, name, department, marks } = student;
+
+    const createReport = (data) => ({
+        ...data,
+        grade: data.marks >= 90 ? "A" : "B",
+        passed: data.marks >= 35 ? "True" : "False"
+    });
+
+    const updatedStudent = createReport(student);
+
+    const display = document.getElementById('display');
+    const statusClass = updatedStudent.passed === "True" ? "pass" : "fail";
+
+    display.innerHTML = `
+        <div class="info"><strong>ID:</strong> ${updatedStudent.id}</div>
+        <div class="info"><strong>Name:</strong> ${updatedStudent.name}</div>
+        <div class="info"><strong>Dept:</strong> ${updatedStudent.department}</div>
+        <div class="info"><strong>Marks:</strong> ${updatedStudent.marks}</div>
+        <div class="info"><strong>Grade:</strong> ${updatedStudent.grade}</div>
+        <div class="status ${statusClass}">
+            Result: ${updatedStudent.passed === "True" ? "PASSED" : "FAILED"}
+        </div>
+    `;
+
+    console.log(updatedStudent);
+</script>
+
+</body>
+</html>
