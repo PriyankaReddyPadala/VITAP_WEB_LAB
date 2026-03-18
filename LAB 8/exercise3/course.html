@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Enrollment System</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 350px; border-top: 5px solid #800000; }
+        h2 { margin-top: 0; color: #800000; font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .info { margin: 15px 0; font-size: 1rem; color: #333; }
+        .status { padding: 10px; border-radius: 5px; font-weight: bold; text-align: center; margin-top: 20px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Enrollment Details</h2>
+    <div id="course-info" class="info"></div>
+    <div id="enroll-msg" class="status"></div>
+</div>
+
+<script>
+    class Course {
+        constructor(courseName, instructor) {
+            this.courseName = courseName;
+            this.instructor = instructor;
+        }
+
+        displayCourse() {
+            const displayStr = `Course: ${this.courseName}, Instructor: ${this.instructor}`;
+            console.log(displayStr);
+            document.getElementById('course-info').innerHTML = `
+                <strong>Course:</strong> ${this.courseName}<br>
+                <strong>Instructor:</strong> ${this.instructor}
+            `;
+        }
+    }
+
+    let course1 = new Course("Web Technologies", "Dr. S.Gopikrishnan");
+    course1.displayCourse();
+
+    let enrollCourse = new Promise((resolve, reject) => {
+        let seatsAvailable = true;
+
+        if (seatsAvailable) {
+            resolve("Enrollment Successful");
+        } else {
+            reject("Course Full");
+        }
+    });
+
+    const msgDiv = document.getElementById('enroll-msg');
+
+    enrollCourse
+        .then(msg => {
+            console.log(msg);
+            msgDiv.textContent = msg;
+            msgDiv.classList.add('success');
+        })
+        .catch(err => {
+            console.log(err);
+            msgDiv.textContent = err;
+            msgDiv.classList.add('error');
+        });
+</script>
+
+</body>
+</html>
