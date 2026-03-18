@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Marks</title>
+</head>
+<body>
+
+<h2>Student Marks Details</h2>
+<p id="output"></p>
+
+<script>
+    let studentName = "Arun";
+    let mark1 = 85;
+    let mark2 = 90;
+    let mark3 = 88;
+
+    const calculateTotal = (m1, m2, m3) => m1 + m2 + m3;
+    const calculateAverage = (total, count) => total / count;
+
+    let totalMarks = calculateTotal(mark1, mark2, mark3);
+    let averageMarks = calculateAverage(totalMarks, 3);
+
+    document.getElementById("output").innerText =
+        `Student Name: ${studentName}
+Total Marks: ${totalMarks}
+Average Marks: ${averageMarks.toFixed(2)}`;
+</script>
+
+</body>
+</html>
